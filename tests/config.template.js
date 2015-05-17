@@ -1,16 +1,22 @@
 module.exports = {
-    client: 'mysql',
+    db: {
+        client: 'mysql',
 
-    connection: {
-        host: 'localhost',
-        user: 'root',
-        password: '',
-        database: 'harbortest',
-        socketPath: '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'
+        connection: {
+            host: 'localhost',
+            user: 'root',
+            password: '',
+            database: 'harbortest',
+            socketPath: '/Applications/XAMPP/xamppfiles/var/mysql/mysql.sock'
+        },
+
+        pool: {
+            min: 0,
+            max: 20
+        }
     },
 
-    pool: {
-        min: 0,
-        max: 20
+    server: {
+        port: 3000
     }
 };
