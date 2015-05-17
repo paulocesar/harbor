@@ -5,10 +5,8 @@ var _ = require('lodash'),
     server = new Hapi.Server(),
     Database = require('./database');
 
-server.connection({ port: 5105 });
-
 // TODO: create a method to validate login
-var validate = function (username, password, callback) {
+var defaultValidate = function (username, password, callback) {
 
 };
 
@@ -19,11 +17,14 @@ module.exports = function (data) {
         start = Q.denodeify(_.bind(server.start, server)),
         routes = data.routes || [],
         config = data.config || {},
+        validate = data.validate || defaultValidate;
         db = new Database(config.db);
 
     // set all global variables for server
     // TODO: should we keep it here?
     var harbor = GLOBAL.harbor = { db: db };
+
+    server.connection({ port: config.server.port || 5105 });
 
     // register hapi plugins and create routes
     return register(AuthBasic)

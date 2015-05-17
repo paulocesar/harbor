@@ -12,7 +12,10 @@ var url = function (p) {
 describe('Server', function () {
 
     before(function () {
-        return server({ routes: [ route ], config: config });
+        return server({
+            routes: [ route ],
+            config: config
+        });
     });
 
     it('should create a server', function (done) {

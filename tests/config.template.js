@@ -17,6 +17,8 @@ module.exports = {
     },
 
     server: {
-        port: 3000
+        port: 5105,
+        controllers: '',
+        models: ''
     }
 };
