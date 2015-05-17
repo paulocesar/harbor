@@ -1,10 +1,9 @@
-
 var hello = function (request, reply) {
     reply({ message: 'hello' });
 };
 
 var projects = function (request, reply) {
-    db.run('npm').then(function (projects) {
+    harbor.db.run('npm').then(function (projects) {
         reply({ projects: projects });
     });
 };

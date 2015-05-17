@@ -22,8 +22,8 @@ module.exports = function (data) {
         db = new Database(config.db);
 
     // set all global variables for server
-    // MUST: remove everything from here or use the minimal exmaple
-    GLOBAL.db = db;
+    // TODO: should we keep it here?
+    var harbor = GLOBAL.harbor = { db: db };
 
     // register hapi plugins and create routes
     return register(AuthBasic)
@@ -33,6 +33,9 @@ module.exports = function (data) {
             server.auth.strategy('basic', 'basic', { validateFunc: validate });
 
             _.each(routes, function (r) { server.route(r); });
-            return start();
+
+            harbor.hapi = server;
+
+            return start().done();
         });
 };
