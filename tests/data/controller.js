@@ -1,8 +1,20 @@
 
 var hello = function (request, reply) {
     reply({ message: 'hello' });
-}
+};
+
+var projects = function (request, reply) {
+    db.run('npm').then(function (projects) {
+        reply({ projects: projects });
+    });
+};
+
+var route = function (path, handler, method) {
+    method = method || 'GET';
+    return { method: method, path: path, config: { handler: handler } };
+};
 
 module.exports = [
-    { method: 'GET', path: '/', config: { handler: hello } }
+    route('/', hello),
+    route('/projects', projects)
 ]

@@ -2,20 +2,37 @@ var _ = require('lodash'),
     Q = require('q'),
     Hapi = require('hapi'),
     AuthBasic = require('hapi-auth-basic'),
-    server = new Hapi.Server();
+    server = new Hapi.Server(),
+    Database = require('./database');
 
 server.connection({ port: 5105 });
 
-module.exports = function (config) {
-    config = config || {};
+// TODO: create a method to validate login
+var validate = function (username, password, callback) {
 
+};
+
+// create server method
+// TODO: add public folder from config file
+module.exports = function (data) {
     var register = Q.denodeify(_.bind(server.register, server)),
         start = Q.denodeify(_.bind(server.start, server)),
-        routes = config.routes || [];
+        routes = data.routes || [],
+        config = data.config || {},
+        db = new Database(config.db);
 
+    // set all global variables for server
+    // MUST: remove everything from here or use the minimal exmaple
+    GLOBAL.db = db;
+
+    // register hapi plugins and create routes
     return register(AuthBasic)
         .then(function () {
+
+            //TODO: think about add other auth strategies
+            server.auth.strategy('basic', 'basic', { validateFunc: validate });
+
             _.each(routes, function (r) { server.route(r); });
             return start();
-        })
+        });
 };
