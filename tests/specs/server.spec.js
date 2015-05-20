@@ -1,7 +1,7 @@
 var server = require('../../src/server'),
     request = require('superagent'),
     assert = require('assert'),
-    route = require('../data/controller'),
+    route = require('../data/route'),
     config = require('../config');
 
 var url = function (p) {
