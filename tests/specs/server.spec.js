@@ -16,6 +16,8 @@ describe('Server', function () {
         return server({
             routes: [ route ],
             config: config,
+            routesPath: path.resolve(__dirname, "..", "data", "controllers"),
+            modelsPath: path.resolve(__dirname, "..", "data", "models"),
             publicPath: path.resolve(__dirname, "..", "data")
         });
     });

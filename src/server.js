@@ -1,4 +1,6 @@
-var _ = require('lodash'),
+var fs = require('fs'),
+    path = require('path'),
+    _ = require('lodash'),
     Q = require('q'),
     Hapi = require('hapi'),
     AuthBasic = require('hapi-auth-basic'),
@@ -10,6 +12,7 @@ var defaultValidate = function (username, password, callback) {
 
 };
 
+// set public folder to hapi
 var addPublicPath = function (server, publicPath) {
     server.route({
         method: 'GET',
@@ -17,6 +20,19 @@ var addPublicPath = function (server, publicPath) {
         handler: {directory: { path: publicPath, listing: true }}
     });
 }
+
+// get array with loaded files
+var requireFilesFromFolder = function (requirePath) {
+    var required = [];
+
+    _.each(fs.readdirSync(requirePath), function (file) {
+        var f = file.replace('.js', '');
+        //TODO ignore file excludeFiles.indexOf(f) == -1
+        required.push(require(path.resolve(requirePath, file)));
+    });
+
+    return required;
+};
 
 // create server method
 // TODO: add public folder from config file
