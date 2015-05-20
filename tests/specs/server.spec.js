@@ -1,4 +1,5 @@
 var server = require('../../src/server'),
+    path = require('path'),
     request = require('superagent'),
     assert = require('assert'),
     route = require('../data/route'),
@@ -14,14 +15,15 @@ describe('Server', function () {
     before(function () {
         return server({
             routes: [ route ],
-            config: config
+            config: config,
+            publicPath: path.resolve(__dirname, "..", "data")
         });
     });
 
     it('should create a server', function (done) {
         request
             .get(url())
-            .end(function(err, res) {
+            .end(function (err, res) {
                 assert.equal(res.body.message, 'hello');
                 done();
             });
@@ -30,10 +32,19 @@ describe('Server', function () {
     it('should select items form database', function (done) {
         request
             .get(url('projects'))
-            .end(function(err, res) {
+            .end(function (err, res) {
                 assert.equal(res.body.projects.length, 2);
                 done();
             });
+    });
+
+    it('should get a pubic file', function (done) {
+        request
+          .get(url('test.sql'))
+          .end(function (err, res) {
+            if (err) { return done(err); }
+            done();
+          });
     });
 
 });

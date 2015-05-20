@@ -2,17 +2,31 @@ var _ = require('lodash'),
     Q = require('q'),
     Hapi = require('hapi'),
     AuthBasic = require('hapi-auth-basic'),
-    server = new Hapi.Server(),
-    Database = require('./database');
+    Database = require('./database'),
+    server = null;
 
 // TODO: create a method to validate login
 var defaultValidate = function (username, password, callback) {
 
 };
 
+var addPublicPath = function (server, publicPath) {
+    server.route({
+        method: 'GET',
+        path: '/{path*}',
+        handler: {directory: { path: publicPath, listing: true }}
+    });
+}
+
 // create server method
 // TODO: add public folder from config file
 module.exports = function (data) {
+
+    //HAPI server creation step
+    var hapiCfg = {};
+    server = new Hapi.Server(hapiCfg);
+
+    //start load routes and configs
     var register = Q.denodeify(_.bind(server.register, server)),
         start = Q.denodeify(_.bind(server.start, server)),
         routes = data.routes || [],
@@ -34,6 +48,10 @@ module.exports = function (data) {
             server.auth.strategy('basic', 'basic', { validateFunc: validate });
 
             _.each(routes, function (r) { server.route(r); });
+
+            if (data.publicPath) {
+                addPublicPath(server, data.publicPath)
+            }
 
             harbor.hapi = server;
 
