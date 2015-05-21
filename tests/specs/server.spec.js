@@ -1,8 +1,7 @@
-var server = require('../../src/server'),
+var server = require('../../index'),
     path = require('path'),
     request = require('superagent'),
     assert = require('assert'),
-    route = require('../data/route'),
     config = require('../config');
 
 var url = function (p) {
@@ -14,15 +13,17 @@ describe('Server', function () {
 
     before(function () {
         return server({
-            routes: [ route ],
             config: config,
-            routesPath: path.resolve(__dirname, "..", "data", "controllers"),
+            routesPath: path.resolve(__dirname, "..", "data", "routes"),
             modelsPath: path.resolve(__dirname, "..", "data", "models"),
             publicPath: path.resolve(__dirname, "..", "data")
         });
     });
 
     it('should create a server', function (done) {
+        assert.equal(typeof harbor.db, 'object');
+        assert.equal(typeof harbor.models.npm, 'object');
+
         request
             .get(url())
             .end(function (err, res) {
