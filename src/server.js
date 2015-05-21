@@ -35,7 +35,6 @@ var requireFilesFromFolder = function (requirePath) {
 };
 
 // create server method
-// TODO: add public folder from config file
 module.exports = function (data) {
 
     //HAPI server creation step
