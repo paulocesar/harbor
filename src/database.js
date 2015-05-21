@@ -3,13 +3,31 @@ var _ = require('lodash'),
     knex = require('knex');
 
 //create a database with knex
-database = function (config) {
-    this.run = knex(config);
+var database = function (config) {
+    var db = this;
+
+    db.run = knex(config);
+
+    // handler mysql disconnections that is not supported
+    // by node-mysql library. probably will be fixed in
+    // the future
+    var reconnectHandler = function (conn) {
+        conn.on('error', function(err) {
+            console.log('\nRe-connecting lost connection: ' +err.stack);
+            db.run.destroy();
+            db.run = knex(config);
+        });
+    }
+
+    //add reconnect handler to mysql
+    db.run.client
+        .acquireRawConnection()
+        .then(reconnectHandler)
+        .done();
 };
 
 
 //helpers that doesn't exists in knex
-
 database.prototype.tryOneRow = function (results) {
     return results[0];
 };
