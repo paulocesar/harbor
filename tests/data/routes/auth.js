@@ -8,17 +8,19 @@ var route = function (path, handler, method) {
 
 //controllers
 
-var hello = function (request, reply) {
+//TODO: see example in https://github.com/hapijs/hapi-auth-cookie
+
+var login = function (request, reply) {
     reply({ message: 'hello' });
 };
 
-var projects = function (request, reply) {
+var logout = function (request, reply) {
     harbor.db.run('npm').then(function (projects) {
         reply({ projects: projects });
     });
 };
 
 module.exports = [
-    route('/', hello),
-    route('/projects', projects)
+    route('/login', login),
+    route('/logout', logout)
 ];

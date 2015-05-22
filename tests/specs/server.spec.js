@@ -14,6 +14,8 @@ describe('Server', function () {
     before(function () {
         return server({
             config: config,
+            cookiePassword: 'sample',
+            redirectLogin: '/login',
             routesPath: path.resolve(__dirname, "..", "data", "routes"),
             modelsPath: path.resolve(__dirname, "..", "data", "models"),
             publicPath: path.resolve(__dirname, "..", "data")

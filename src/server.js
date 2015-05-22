@@ -3,14 +3,9 @@ var fs = require('fs'),
     _ = require('lodash'),
     Q = require('q'),
     Hapi = require('hapi'),
-    AuthBasic = require('hapi-auth-basic'),
     Database = require('./database'),
+    AuthCookie = require('hapi-auth-cookie'),
     server = null;
-
-// TODO: create a method to validate login
-var defaultValidate = function (username, password, callback) {
-
-};
 
 // set public folder to hapi
 var addPublicPath = function (server, publicPath) {
@@ -37,7 +32,6 @@ var requireFilesFromFolder = function (requirePath) {
 };
 
 // create server method
-// TODO: add public folder from config file
 module.exports = function (data) {
 
     //HAPI server creation step
@@ -50,7 +44,6 @@ module.exports = function (data) {
         routes = requireFilesFromFolder(data.routesPath),
         models = requireFilesFromFolder(data.modelsPath),
         config = data.config || {},
-        validate = data.validate || defaultValidate;
         db = new Database(config.db);
 
     // set all global variables for server
@@ -60,11 +53,15 @@ module.exports = function (data) {
     server.connection({ port: config.server.port || 5105 });
 
     // register hapi plugins and create routes
-    return register(AuthBasic)
+    return register(AuthCookie)
         .then(function () {
-
-            //TODO: think about add other auth strategies
-            server.auth.strategy('basic', 'basic', { validateFunc: validate });
+            server.auth.strategy('session', 'cookie', {
+                cookie: 'session',
+                password: data.cookiePassword || 'harboria#&733b',
+                redirectTo: data.redirectLogin || '/login',
+                isSecure: false,
+                ttl: 24* 60 * 60 * 1000
+            });
 
             //routes are equal Hapi structure
             _.each(routes, function (r) { server.route(r); });
