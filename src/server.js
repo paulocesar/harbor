@@ -53,28 +53,27 @@ module.exports = function (data) {
     server.connection({ port: config.server.port || 5105 });
 
     // register hapi plugins and create routes
-    return register(AuthCookie)
-        .then(function () {
-            server.auth.strategy('session', 'cookie', {
-                cookie: 'session',
-                password: data.cookiePassword || 'harboria#&733b',
-                redirectTo: data.redirectLogin || '/login',
-                isSecure: false,
-                ttl: 24* 60 * 60 * 1000
-            });
-
-            //routes are equal Hapi structure
-            _.each(routes, function (r) { server.route(r); });
-
-            //models must export model name
-            _.each(models, function (m) { _.extend(harbor.models, m); });
-
-            if (data.publicPath) {
-                addPublicPath(server, data.publicPath)
-            }
-
-            harbor.hapi = server;
-
-            return start().done();
+    return register(AuthCookie).then(function () {
+        server.auth.strategy('session', 'cookie', {
+            cookie: 'session',
+            password: data.cookiePassword || 'harboria#&733b',
+            redirectTo: data.redirectLogin || '/login',
+            isSecure: false,
+            ttl: 24* 60 * 60 * 1000
         });
+
+        //routes are equal Hapi structure
+        _.each(routes, function (r) { server.route(r); });
+
+        //models must export model name
+        _.each(models, function (m) { _.extend(harbor.models, m); });
+
+        if (data.publicPath) {
+            addPublicPath(server, data.publicPath)
+        }
+
+        harbor.hapi = server;
+
+        return start().done();
+    });
 };
