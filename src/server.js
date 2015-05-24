@@ -74,6 +74,12 @@ module.exports = function (data) {
 
         harbor.hapi = server;
 
-        return start().done();
+        return start();
+    })
+    .then(function () {
+        return harbor;
+    })
+    .catch(function (err) {
+        console.log(err);
     });
 };

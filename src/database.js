@@ -17,13 +17,17 @@ var database = function (config) {
             db.run.destroy();
             db.run = knex(config);
         });
+        return conn;
     }
 
     //add reconnect handler to mysql
+    //BUG: we're missing promise here, see another way to do it
     db.run.client
         .acquireRawConnection()
         .then(reconnectHandler)
-        .done();
+        .catch(function (err) {
+            console.log(err);
+        });
 };
 
 

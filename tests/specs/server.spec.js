@@ -19,6 +19,8 @@ describe('Server', function () {
             routesPath: path.resolve(__dirname, "..", "data", "routes"),
             modelsPath: path.resolve(__dirname, "..", "data", "models"),
             publicPath: path.resolve(__dirname, "..", "data")
+        }).then(function (harbor) {
+            assert.equal(typeof harbor.db, 'object')
         });
     });
 
