@@ -44,16 +44,4 @@ database.prototype.oneRow = function (results) {
     return results[0];
 };
 
-// TODO: think about this activeRecord
-// we really need it? this is the right place?
-database.prototype.activeRecord = function (tableName) {
-    var self = this;
-
-    return function (results) {
-        var data = self.oneRow(results);
-        return results[0];
-    }
-};
-
-
 module.exports = database;

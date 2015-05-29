@@ -21,13 +21,4 @@ describe('Database', function () {
                 assert.equal(typeof project.name, "string");
             });
     });
-
-    it('create active record', function () {
-        return db.run('npm')
-            .limit(1)
-            .then(db.activeRecord('npm'))
-            .then(function (project) {
-                assert.equal(typeof project.name, "string");
-            });
-    });
 });
