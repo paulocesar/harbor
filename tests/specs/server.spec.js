@@ -26,7 +26,7 @@ describe('Server', function () {
 
     it('should create a server', function (done) {
         assert.equal(typeof harbor.db, 'object');
-        assert.equal(typeof harbor.models.npm, 'object');
+        assert.equal(typeof harbor.models.npm, 'function');
 
         request.get(url())
             .end(function (err, res) {
@@ -74,6 +74,13 @@ describe('Server', function () {
                 assert(res.body.id, 'john');
                 testSession(testLogout);
             })
+    });
+
+    it('should load models', function (done) {
+        harbor.models.npm().all().then(function (projects) {
+            assert.equal(projects.length, 2);
+            done();
+        });
     });
 
 });

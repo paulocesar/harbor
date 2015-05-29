@@ -18,14 +18,14 @@ var addPublicPath = function (server, publicPath) {
 
 // get array with loaded files
 var requireFilesFromFolder = function (requirePath) {
-    if (!requirePath) { return []; }
+    if (!requirePath) { return {}; }
 
-    var required = [];
+    var required = {};
 
     _.each(fs.readdirSync(requirePath), function (file) {
         var f = file.replace('.js', '');
         //TODO ignore file excludeFiles.indexOf(f) == -1
-        required.push(require(path.resolve(requirePath, file)));
+        required[f] = require(path.resolve(requirePath, file));
     });
 
     return required;
@@ -66,7 +66,7 @@ module.exports = function (data) {
         _.each(routes, function (r) { server.route(r); });
 
         //models must export model name
-        _.each(models, function (m) { _.extend(harbor.models, m); });
+        _.each(models, function (m, name) { harbor.models[name] = m; });
 
         if (data.publicPath) {
             addPublicPath(server, data.publicPath);
