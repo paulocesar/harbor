@@ -28,8 +28,7 @@ describe('Server', function () {
         assert.equal(typeof harbor.db, 'object');
         assert.equal(typeof harbor.models.npm, 'object');
 
-        request
-            .get(url())
+        request.get(url())
             .end(function (err, res) {
                 assert.equal(res.body.message, 'hello');
                 done();
@@ -37,8 +36,7 @@ describe('Server', function () {
     });
 
     it('should select items form database', function (done) {
-        request
-            .get(url('projects'))
+        request.get(url('projects'))
             .end(function (err, res) {
                 assert.equal(res.body.projects.length, 2);
                 done();
@@ -46,12 +44,36 @@ describe('Server', function () {
     });
 
     it('should get a pubic file', function (done) {
-        request
-          .get(url('test.sql'))
+        request.get(url('test.sql'))
           .end(function (err, res) {
             if (err) { return done(err); }
             done();
           });
+    });
+
+    it('should login', function (done) {
+        var r = request.agent();
+
+        var testSession = function (callback) {
+            r.get(url('home')).end(function(err, res) {
+                assert.equal(res.body.id, 'john');
+                callback();
+            });
+        }
+
+        var testLogout = function () {
+            r.get(url('logout')).end(function(err, res) {
+                assert.equal(res.body.message, 'hello');
+                done();
+            });
+        };
+
+        r.post(url('login'))
+            .send({ id: 'john', password: 'password' })
+            .end(function (err, res) {
+                assert(res.body.id, 'john');
+                testSession(testLogout);
+            })
     });
 
 });

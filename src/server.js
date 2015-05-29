@@ -69,7 +69,7 @@ module.exports = function (data) {
         _.each(models, function (m) { _.extend(harbor.models, m); });
 
         if (data.publicPath) {
-            addPublicPath(server, data.publicPath)
+            addPublicPath(server, data.publicPath);
         }
 
         harbor.hapi = server;
