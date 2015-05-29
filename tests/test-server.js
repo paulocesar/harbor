@@ -2,8 +2,9 @@ var path = require('path'),
     server = require('../index'),
     config = require('./config');
 
-server({
-    config: config,
+server.start({
+    db: config.db,
+    port: config.server.port,
     cookiePassword: 'sample',
     redirectLogin: '/login',
     routesPath: path.resolve(__dirname, "data", "routes"),

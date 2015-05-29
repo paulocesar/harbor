@@ -12,8 +12,9 @@ var url = function (p) {
 describe('Server', function () {
 
     before(function () {
-        return server({
-            config: config,
+        return server.start({
+            db: config.db,
+            port: config.port,
             cookiePassword: 'sample',
             redirectLogin: '/login',
             routesPath: path.resolve(__dirname, "..", "data", "routes"),
