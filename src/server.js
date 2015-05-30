@@ -18,6 +18,8 @@ var configureAuthStrategy = function (server, data) {
 };
 
 var loadRoutes = function (server, data) {
+    if (!data.routesPath) { return; }
+
     var routes = harbor.helpers.requireFiles(data.routesPath);
 
     //routes are equal Hapi structure

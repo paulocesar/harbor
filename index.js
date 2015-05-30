@@ -12,6 +12,9 @@ module.exports = {
     startDatabase: function (config) {
         harbor.db = new Database(config.db);
         harbor.Model = Model;
+
+        if (!config.modelsPath) { return; }
+
         harbor.models = helpers.requireFiles(config.modelsPath);
     },
 
