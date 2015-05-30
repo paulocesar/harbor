@@ -9,6 +9,7 @@ server.start({
     redirectLogin: '/login',
     routesPath: path.resolve(__dirname, "data", "routes"),
     modelsPath: path.resolve(__dirname, "data", "models"),
+    viewsPath: path.resolve(__dirname, "data", "views"),
     publicPath: path.resolve(__dirname, "data")
 }).then(function () {
     console.log("Running test server...");

@@ -4,10 +4,9 @@ var server = require('../../index'),
     assert = require('assert'),
     config = require('../config');
 
-var url = function (p) {
-    p = p || '';
-    return 'http://localhost:5105/' + p;
-}
+var url = function (p) { return 'http://localhost:5105/' + (p || ''); };
+
+var htmlResponse = "<p>hello</p>\n";
 
 describe('Server', function () {
 
@@ -19,19 +18,20 @@ describe('Server', function () {
             redirectLogin: '/login',
             routesPath: path.resolve(__dirname, "..", "data", "routes"),
             modelsPath: path.resolve(__dirname, "..", "data", "models"),
+            viewsPath: path.resolve(__dirname, "..", "data", "views"),
             publicPath: path.resolve(__dirname, "..", "data")
         }).then(function (harbor) {
             assert.equal(typeof harbor.db, 'object')
         });
     });
 
-    it('should create a server', function (done) {
+    it('should create complete a server', function (done) {
         assert.equal(typeof harbor.db, 'object');
         assert.equal(typeof harbor.models.npm, 'function');
 
         request.get(url())
             .end(function (err, res) {
-                assert.equal(res.body.message, 'hello');
+                assert.equal(res.text, htmlResponse);
                 done();
             });
     });
@@ -64,7 +64,7 @@ describe('Server', function () {
 
         var testLogout = function () {
             r.get(url('logout')).end(function(err, res) {
-                assert.equal(res.body.message, 'hello');
+                assert.equal(res.text, htmlResponse);
                 done();
             });
         };

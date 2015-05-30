@@ -9,7 +9,7 @@ var route = function (path, handler, method) {
 //controllers
 
 var hello = function (request, reply) {
-    reply({ message: 'hello' });
+    reply.view("npm", { message: 'hello' });
 };
 
 var projects = function (request, reply) {

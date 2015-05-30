@@ -3,11 +3,12 @@ var fs = require('fs'),
     _ = require('lodash'),
     Q = require('q'),
     Hapi = require('hapi'),
+    handlebars = require('handlebars'),
     Database = require('./database'),
     AuthCookie = require('hapi-auth-cookie'),
     server = null;
 
-var configureAuthStrategy = function (server, data) {
+var setAuthStrategy = function (server, data) {
     server.auth.strategy('session', 'cookie', {
         cookie: 'session',
         password: data.cookiePassword || 'harboria#&733b',
@@ -17,7 +18,7 @@ var configureAuthStrategy = function (server, data) {
     });
 };
 
-var loadRoutes = function (server, data) {
+var setRoutes = function (server, data) {
     if (!data.routesPath) { return; }
 
     var routes = harbor.helpers.requireFiles(data.routesPath);
@@ -26,7 +27,7 @@ var loadRoutes = function (server, data) {
     _.each(routes, function (r) { server.route(r); });
 };
 
-var addPublicPath = function (server, data) {
+var setPublicFolder = function (server, data) {
     if (!data.publicPath) { return; }
 
     server.route({
@@ -35,6 +36,15 @@ var addPublicPath = function (server, data) {
         handler: { directory: {
             path: data.publicPath, listing: true
         }}
+    });
+};
+
+var setViews = function (server, data) {
+    if (!data.viewsPath) { return; }
+
+    server.views({
+        engines: { html: handlebars },
+        path: data.viewsPath
     });
 };
 
@@ -52,9 +62,10 @@ module.exports = function (data) {
     server.connection({ port: data.port || 5105 });
 
     return register(AuthCookie).then(function () {
-        configureAuthStrategy(server, data);
-        loadRoutes(server, data);
-        addPublicPath(server, data);
+        setAuthStrategy(server, data);
+        setRoutes(server, data);
+        setPublicFolder(server, data);
+        setViews(server, data);
 
         return start();
     })

@@ -1,6 +1,7 @@
 {
   "private": true,
   "dependencies": {
+    "handlebars": "^3.0.3",
     "hapi": "^8.4.0",
     "hapi-auth-basic": "^2.0.0",
     "hapi-auth-cookie": "^2.2.0",
