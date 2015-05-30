@@ -27,7 +27,7 @@ module.exports = function (data) {
     var harbor = GLOBAL.harbor,
         register = Q.denodeify(_.bind(server.register, server)),
         start = Q.denodeify(_.bind(server.start, server)),
-        routes = harbor.helpers.requireFilesFromFolder(data.routesPath);
+        routes = harbor.helpers.requireFiles(data.routesPath);
 
     server.connection({ port: data.port || 5105 });
 

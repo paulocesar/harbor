@@ -1,43 +1,22 @@
-var fs = require('fs'),
-    path = require('path'),
-    _ = require('lodash'),
-    Q = require('q'),
+var helpers = require('./src/helpers')
     Database = require('./src/database'),
-    server = require('./src/server');
+    Model = require('./src/model')
+    Server = require('./src/server');
 
-var harbor = GLOBAL.harbor = {
-    helpers: { }
-};
+var harbor = GLOBAL.harbor = { };
 
-// get array with loaded files
-harbor.helpers.requireFilesFromFolder = function (requirePath) {
-    if (!requirePath) { return {}; }
-
-    var required = {};
-
-    _.each(fs.readdirSync(requirePath), function (file) {
-        var f = file.replace('.js', '');
-        //TODO ignore file excludeFiles.indexOf(f) == -1
-        required[f] = require(path.resolve(requirePath, file));
-    });
-
-    return required;
-};
+// add helpers to global harbor
+harbor.helpers = helpers;
 
 module.exports = {
     startDatabase: function (config) {
         harbor.db = new Database(config.db);
-    },
-
-    startModels: function (config) {
-        harbor.models = harbor
-            .helpers
-            .requireFilesFromFolder(config.modelsPath);
+        harbor.Model = Model;
+        harbor.models = helpers.requireFiles(config.modelsPath);
     },
 
     start: function (config) {
         this.startDatabase(config);
-        this.startModels(config);
-        return server(config);
+        return Server(config);
     }
 };

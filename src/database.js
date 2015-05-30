@@ -21,7 +21,7 @@ var database = function (config) {
     }
 
     //add reconnect handler to mysql
-    //BUG: we're missing promise here, see another way to do it
+    //we're missing promise here, see another way to do it
     db.run.client
         .acquireRawConnection()
         .then(reconnectHandler)
