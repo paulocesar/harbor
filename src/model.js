@@ -1,4 +1,5 @@
-var Model = function () {
+var Model = module.exports = function () {
+
 }
 
 Model.prototype.db = function (tableName) {

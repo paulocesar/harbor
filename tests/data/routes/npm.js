@@ -13,7 +13,7 @@ var hello = function (request, reply) {
 };
 
 var projects = function (request, reply) {
-    harbor.db.run('npm').then(function (projects) {
+    harbor.models.npm().all().then(function (projects) {
         reply({ projects: projects });
     });
 };
