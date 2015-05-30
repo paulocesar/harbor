@@ -1,0 +1,18 @@
+* maybe create a controller factory for session, file upload, ...
+
+* create a file uploader helper
+    http://stackoverflow.com/questions/21823379/how-to-upload-files-using-nodejs-and-hapi?answertab=votes#tab-top
+
+    server.route({
+       method: 'POST',
+       path: '/create',
+       config: {
+          payload:{
+                maxBytes: 209715200,
+                output:'stream',
+                parse: true
+          },
+          handler: function (request, reply) {
+              request.payload["htmlInputName"].pipe(fs.createWriteStream("test"));
+          }
+    });
