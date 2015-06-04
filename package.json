@@ -1,4 +1,6 @@
 {
+  "name": "harbor",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "handlebars": "^3.0.3",
