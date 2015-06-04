@@ -10,10 +10,10 @@
     "knex": "^0.8.5",
     "lodash": "^3.8.0",
     "mysql": "^2.6.2",
-    "q": "^1.4.0",
-    "superagent": "^1.2.0"
+    "q": "^1.4.0"
   },
   "devDependencies": {
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "superagent": "^1.2.0"
   }
 }
