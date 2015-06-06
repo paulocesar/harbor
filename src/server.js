@@ -76,6 +76,6 @@ module.exports = function (data) {
         return harbor;
     })
     .catch(function (err) {
-        console.log(err);
+        console.log(err, err.stack);
     });
 };
