@@ -44,7 +44,10 @@ var setViews = function (server, data) {
 
     server.views({
         engines: { html: handlebars },
-        path: data.viewsPath
+        path: data.viewsPath,
+        layoutPath: data.layoutPath || data.viewsPath,
+        layout: !!(data.layoutPath),
+        partialsPath: data.partialsPath || data.viewsPath
     });
 };
 
