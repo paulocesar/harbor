@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
+    "gm": "^1.18.1",
     "handlebars": "^3.0.3",
     "hapi": "^8.4.0",
     "hapi-auth-basic": "^2.0.0",
