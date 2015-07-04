@@ -15,7 +15,7 @@ var routes = [
                 parse: true
             },
             handler: function (request, reply) {
-                var p = path.resolve(imagePath, 'sample.png');
+                var p = path.resolve(imagePath, 'sample.jpg');
                 var image = request.payload.image
                 image.pipe(fs.createWriteStream(p));
                 image.on('end', function () {
@@ -30,18 +30,14 @@ var routes = [
         path: '/image/crop',
         config: {
             handler: function (request, reply) {
-                var srcImg = path.resolve(imagePath, 'sample.png');
-                var destImg = path.resolve(imagePath, 't-sample.png');
+                var srcImg = path.resolve(imagePath, 'sample.jpg');
+                var destImg = path.resolve(imagePath, 't-sample.jpg');
                 var coords = request.payload;
                 var resizeX = 150;
                 var resizeY = 150;
 
-                console.dir(coords);
-
                 gm(srcImg)
-                    .resize(coords.currentWidth, coords.currentHeight)
-                    //subtrair left/right
-                    .crop(coords.width * 3, coords.height * 3, coords.x, coords.y)
+                    .crop(coords.width, coords.height, coords.x, coords.y)
                     .resize(resizeX,resizeY)
                     .write(destImg, function(err){
                         if (err) {
