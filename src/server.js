@@ -18,7 +18,16 @@ var setAuthStrategy = function (server, data) {
     });
 };
 
-var setRoutes = function (server, data) {
+var setPluginRoutes = function (server, data) {
+    var p = path.resolve(__dirname, 'plugins');
+    var routes = harbor.helpers.requireFiles(p);
+
+    _.each(routes, function (plugin) {
+        server.route(plugin(server, data));
+    });
+};
+
+var setClientRoutes = function (server, data) {
     if (!data.routesPath) { return; }
 
     var routes = harbor.helpers.requireFiles(data.routesPath);
@@ -66,7 +75,8 @@ module.exports = function (data) {
 
     return register(AuthCookie).then(function () {
         setAuthStrategy(server, data);
-        setRoutes(server, data);
+        setPluginRoutes(server, data);
+        setClientRoutes(server, data);
         setPublicFolder(server, data);
         setViews(server, data);
 
