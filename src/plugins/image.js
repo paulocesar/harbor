@@ -1,8 +1,28 @@
+var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
 var gm = require('gm');
 
 var imagePath = null;
+
+var getImageName = null;
+var getDefaultName = function () { return Date.now(); };
+
+var getFileInfo = function (filename) {
+    var data = {};
+
+    data.extension = path.extname(filename).toLowerCase();
+    data.name = path.basename(filename, data.extension);
+    data.filename = data.name + data.extension;
+
+    return data;
+}
+
+var cropImage = function (srcImg, destImg, coords, callback) {
+    gm(srcImg).crop(coords.width, coords.height, coords.x, coords.y)
+        .resize(coords.resizeX, coords.resizeY)
+        .write(destImg, callback);
+}
 
 var routes = [
     {
@@ -15,11 +35,15 @@ var routes = [
                 parse: true
             },
             handler: function (request, reply) {
-                var p = path.resolve(imagePath, 'sample.jpg');
-                var image = request.payload.image
+                var image = request.payload.image;
+                var extension = getFileInfo(image.hapi.filename).extension;
+                var destFile =  getImageName() + extension;
+                var p = path.resolve(imagePath, destFile);
+
                 image.pipe(fs.createWriteStream(p));
+
                 image.on('end', function () {
-                    reply({ src: '/images/sample.jpg' });
+                    reply({ src: '/images/cropper/' + destFile });
                 });
             }
         }
@@ -30,24 +54,21 @@ var routes = [
         path: '/image/crop',
         config: {
             handler: function (request, reply) {
-                var srcImg = path.resolve(imagePath, 'sample.jpg');
-                var destImg = path.resolve(imagePath, 't-sample.jpg');
-                var coords = request.payload;
-                var resizeX = 150;
-                var resizeY = 150;
+                var image = request.payload;
+                var fileInfo = getFileInfo(image.src);
+                var srcImg = path.resolve(imagePath, fileInfo.filename);
 
-                gm(srcImg)
-                    .crop(coords.width, coords.height, coords.x, coords.y)
-                    .resize(resizeX,resizeY)
-                    .write(destImg, function(err){
-                        if (err) {
-                            console.dir(err);
-                            return reply(err);
-                        }
+                var destImgName = getImageName() + fileInfo.extension;
+                var destImg = path.resolve(imagePath, destImgName);
 
-                        console.log("Image: " + destImg.toString() + " Cropped");
-                        reply("success");
-                    });
+                cropImage(srcImg, destImg, image, function(err){
+                    if (err) {
+                        console.dir(err);
+                        return reply(err);
+                    }
+
+                    reply({ src: '/images/cropper/' + destImgName });
+                });
             }
         }
     }
@@ -56,7 +77,12 @@ var routes = [
 module.exports = function (server, data) {
     if (!data.publicPath) { return; }
 
-    imagePath = path.resolve(data.publicPath.toString(), 'images').toString();
+    var config = data.image || {};
+
+    getImageName = config.getName || getDefaultName;
+    getCropName = config.getCropName || getDefaultName;
+
+    imagePath = path.resolve(data.publicPath.toString(), 'images/cropper').toString();
 
     return routes;
 };
