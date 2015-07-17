@@ -13,7 +13,7 @@ var database = function (config) {
     // the future
     var reconnectHandler = function (conn) {
         conn.on('error', function(err) {
-            console.log('\nRe-connecting lost connection: ' +err.stack);
+            console.log('\nRe-connecting lost connection: ' + err.stack);
             db.run.destroy();
             db.run = knex(config);
         });
@@ -27,6 +27,7 @@ var database = function (config) {
         .then(reconnectHandler)
         .catch(function (err) {
             console.log(err);
+            exit(1);
         });
 };
 
